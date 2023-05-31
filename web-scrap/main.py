@@ -1,29 +1,20 @@
 from bs4 import BeautifulSoup
+import requests
+#pip install requests
 
-with open("./index.html") as file:
-    html_code = file.read()
+response = requests.get("http://www.ekospace.cz/")
 
-soup = BeautifulSoup(html_code, "html.parser")
+web = response.text
 
-print(soup.title.string)
+soup = BeautifulSoup(web,"html.parser")
+text_book = soup.find("a", class_="ucebniceMikro")
+pdf = text_book.get("href")
 
+url = "http://www.ekospace.cz/"
+pdf_url =  url + pdf
+print(pdf_url)
 
+response2 = requests.get(pdf_url)
+with open("web-scrap/ucebnice.pdf","wb") as file:
+    file.write(response2.content)
 
-all_a = soup.find_all("a")
-print(all_a)
-
-with open("./a.txt", mode="w" ) as fileA:
-    for one_a in all_a:
-        a1 = one_a.get("href")
-
-        fileA.write(a1)
-        fileA.write("\n")
-
-heading = soup.find(name="h1", id="name") 
-print(heading)
-
-heading2= soup.find_all("h2", class_="about")
-print(heading2)
-
-contact = soup.select("p a")
-# a ktore je v p tagu .. je aj select_one
